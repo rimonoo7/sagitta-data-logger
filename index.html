@@ -3,293 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sagitta Data Dashboard</title>
+    <title>Sagitta Data Logger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #1976d2;
-            --primary-dark: #1565c0;
-            --secondary: #757575;
-            --light: #f5f5f5;
-            --dark: #212121;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
         }
         
         body {
-            background-color: #f9f9f9;
-            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 56px;
         }
         
         .navbar {
-            background-color: var(--primary);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 1.5rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 1.5rem;
-        }
-        
-        .sidebar {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .main-content {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 80px 0;
+            margin-bottom: 40px;
         }
         
         .card {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            border: none;
         }
         
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        .card:hover {
+            transform: translateY(-5px);
         }
         
-        .stat-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
+        .card-header {
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .stats-card {
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 20px;
         }
         
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            color: var(--secondary);
-            font-size: 0.9rem;
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
         }
         
         .data-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .data-table th, .data-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .data-table th {
-            background-color: #f7f7f7;
-            font-weight: 500;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        
-        .btn:hover {
-            background: var(--primary-dark);
         }
         
         .map-container {
             height: 300px;
-            background: #eee;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary);
+            border-radius: 10px;
+            overflow: hidden;
         }
         
-        .upload-section {
-            background: #f9f9f9;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 1.5rem;
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
             text-align: center;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <h1>Sagitta Data Dashboard</h1>
-        <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">Data</a></li>
-            <li><a href="#">Visualizations</a></li>
-            <li><a href="#">Settings</a></li>
-        </ul>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-microchip me-2"></i>Sagitta Data Logger
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#data">Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#upload">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
-    
-    <div class="container">
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value">247</div>
-                <div class="stat-label">Data Points</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">12.7</div>
-                <div class="stat-label">Average Value</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Active Sessions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">2.4</div>
-                <div class="stat-label">Update Frequency (Hz)</div>
-            </div>
-        </div>
-        
-        <div class="dashboard">
-            <div class="sidebar">
-                <h2>Latest Data</h2>
-                <div class="card">
-                    <h3>Last Updated</h3>
-                    <p id="last-update">2023-07-15 14:32:18</p>
-                </div>
-                <div class="card">
-                    <h3>Current Location</h3>
-                    <p id="current-location">Lat: 40.7128, Long: -74.0060</p>
-                </div>
-                <div class="card">
-                    <h3>Data Status</h3>
-                    <p id="data-status">Active</p>
-                </div>
-            </div>
-            
-            <div class="main-content">
-                <h2>Data Visualization</h2>
-                <div class="map-container">
-                    Map Visualization Would Appear Here
-                </div>
-                
-                <h3>Recent Data Points</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Latitude</th>
-                            <th>Longitude</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="data-body">
-                        <tr>
-                            <td>2023-07-15 14:32:18</td>
-                            <td>40.7128</td>
-                            <td>-74.0060</td>
-                            <td>12.4</td>
-                        </tr>
-                        <tr>
-                            <td>2023-07-15 14:31:18</td>
-                            <td>40.7129</td>
-                            <td>-74.0061</td>
-                            <td>13.1</td>
-                        </tr>
-                        <tr>
-                            <td>2023-07-15 14:30:18</td>
-                            <td>40.7127</td>
-                            <td>-74.0059</td>
-                            <td>11.8</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div class="upload-section">
-                    <h3>Upload New Data</h3>
-                    <p>Use the Sagitta app to collect and upload new data</p>
-                    <button class="btn" onclick="simulateUpload()">Simulate Data Upload</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold">Sagitta Data Logger System</h1>
+            <p class="lead">Monitor temperature and pressure data with location tracking</p>
+            <a href="#data" class="btn btn-light btn-lg mt-3">View Data <i class="fas fa-arrow-down ms-2"></i></a>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-5">
+        <div class="container">
+            <h2 class="section-title">Dashboard Overview</h2>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-thermometer-half fa-3x mb-3 text-primary"></i>
+                            <h3 class="stats-number" id="current-temp">--</h3>
+                            <p class="card-text">Current Temperature</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-tachometer-alt fa-3x mb-3 text-primary"></i>
+                            <h3 class="stats-number" id="current-pressure">--</h3>
+                            <p class="card-text">Current Pressure (kPa)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-database fa-3x mb-3 text-primary"></i>
+                            <h3 class="stats-number" id="data-points">--</h3>
+                            <p class="card-text">Data Points Collected</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-map-marker-alt fa-3x mb-3 text-primary"></i>
+                            <h3 class="stats-number" id="locations">--</h3>
+                            <p class="card-text">Locations Tracked</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Temperature Trend</div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="temperatureChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Pressure Trend</div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="pressureChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Section -->
+    <section id="data" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title">Sensor Data</h2>
+            
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Latest Data Readings</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary me-2" id="refreshBtn">
+                            <i class="fas fa-sync-alt me-1"></i> Refresh Data
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="data-loading" class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="table-responsive" id="data-table-container" style="display: none;">
+                        <table class="table table-striped table-hover data-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Temperature (°C)</th>
+                                    <th>Pressure (kPa)</th>
+                                    <th>ADC Value</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data-table-body">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload" class="py-5">
+        <div class="container">
+            <h2 class="section-title">Upload Data</h2>
+            
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header">How to Upload Data</div>
+                        <div class="card-body">
+                            <ol>
+                                <li>Connect your Android device to the ESP32's WiFi network (Avro-Sagitta-Logger)</li>
+                                <li>Open the Sagitta Android app</li>
+                                <li>Start logging to collect data</li>
+                                <li>Stop logging when finished</li>
+                                <li>Download the CSV file from the ESP32</li>
+                                <li>Get your current location</li>
+                                <li>Press the Upload button to send data to this website</li>
+                            </ol>
+                            
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Data is automatically sent to this website when you press Upload in the Android app.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title">About Sagitta Logger</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">System Information</div>
+                        <div class="card-body">
+                            <p>The Sagitta Data Logger is an ESP32-based system designed to collect temperature and pressure data along with location information.</p>
+                            
+                            <h5>Features:</h5>
+                            <ul>
+                                <li>Real-time temperature monitoring with MAX31865 sensor</li>
+                                <li>Pressure sensing with ADS1115 ADC</li>
+                                <li>GPS location tracking</li>
+                                <li>Data logging to SD card</li>
+                                <li>WiFi connectivity for data export</li>
+                                <li>Low-power operation with deep sleep mode</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Technical Specifications</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Microcontroller</h6>
+                                    <p class="small">ESP32-WROOM-32</p>
+                                    
+                                    <h6>Temperature Sensor</h6>
+                                    <p class="small">MAX31865 (RTD PT100)</p>
+                                    
+                                    <h6>ADC</h6>
+                                    <p class="small">ADS1115 16-bit</p>
+                                </div>
+                                
+                                <div class="col-6">
+                                    <h6>Storage</h6>
+                                    <p class="small">MicroSD Card</p>
+                                    
+                                    <h6>Wireless</h6>
+                                    <p class="small">WiFi 802.11 b/g/n</p>
+                                    
+                                    <h6>Power</h6>
+                                    <p class="small">3.7V Li-ion Battery</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Sagitta Data Logger</h5>
+                    <p>Advanced environmental monitoring system with location tracking.</p>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#dashboard" class="text-light">Dashboard</a></li>
+                        <li><a href="#data" class="text-light">Data</a></li>
+                        <li><a href="#upload" class="text-light">Upload</a></li>
+                        <li><a href="#about" class="text-light">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Connect</h5>
+                    <div class="d-flex">
+                        <a href="#" class="text-light me-3"><i class="fab fa-github fa-2x"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-2x"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="bg-light">
+            
+            <div class="text-center">
+                <p class="mb-0">&copy; 2023 Sagitta Data Logger. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main Application Script -->
     <script>
-        // Simple simulation of data updates
-        function simulateUpload() {
-            alert('In a real implementation, this would upload data from the app');
+        // Chart variables
+        let tempChart, pressureChart;
+        let allData = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts
+            initCharts();
             
-            // Simulate adding new data
-            const table = document.getElementById('data-body');
-            const newRow = table.insertRow(0);
+            // Load data
+            loadData();
             
-            const now = new Date();
-            const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
+            // Set up event listeners
+            document.getElementById('refreshBtn').addEventListener('click', loadData);
+        });
+
+        function initCharts() {
+            // Temperature Chart
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            tempChart = new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
             
-            newRow.innerHTML = `
-                <td>${timestamp}</td>
-                <td>40.71${Math.floor(Math.random() * 100)}</td>
-                <td>-74.00${Math.floor(Math.random() * 100)}</td>
-                <td>${(10 + Math.random() * 5).toFixed(1)}</td>
-            `;
-            
-            // Update last update time
-            document.getElementById('last-update').textContent = timestamp;
+            // Pressure Chart
+            const pressureCtx = document.getElementById('pressureChart').getContext('2d');
+            pressureChart = new Chart(pressureCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Pressure (kPa)',
+                        data: [],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
         }
-        
-        // Update the time every minute
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('last-update').textContent = 
-                now.toISOString().replace('T', ' ').substring(0, 19);
-        }, 60000);
+
+        async function loadData() {
+            try {
+                // Show loading state
+                document.getElementById('data-loading').style.display = 'flex';
+                document.getElementById('data-table-container').style.display = 'none';
+                
+                // In a real implementation, you would fetch data from Google Sheets
+                // For this demo, we'll use sample data
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Sample data - in a real app, this would come from Google Sheets
+                const sampleData = [
+                    { time: '2023-08-25 14:32:18', temp: 24.7, pressure: 101.3, adc: 5932, location: '23.8103° N, 90.4125° E' },
+                    { time: '2023-08-25 14:31:45', temp: 24.6, pressure: 101.2, adc: 5928, location: '23.8103° N, 90.4125° E' },
+                    { time: '2023-08-25 14:31:12', temp: 24.8, pressure: 101.4, adc: 5940, location: '23.8102° N, 90.4126° E' },
+                    { time: '2023-08-25 14:30:39', temp: 24.5, pressure: 101.1, adc: 5920, location: '23.8102° N, 90.4126° E' },
+                    { time: '2023-08-25 14:30:06', temp: 24.7, pressure: 101.3, adc: 5935, location: '23.8103° N, 90.4125° E' }
+                ];
+                
+                allData = sampleData;
+                
+                // Update UI with data
+                updateDashboard(allData);
+                populateDataTable(allData);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('data-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No data available yet. Upload some data from your Android app.
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('data-loading').style.display = 'none';
+                document.getElementById('data-table-container').style.display = 'block';
+            }
+        }
+
+        function updateDashboard(data) {
+            if (data.length === 0) return;
+            
+            // Update stats
+            document.getElementById('current-temp').textContent = `${data[data.length - 1].temp}°C`;
+            document.getElementById('current-pressure').textContent = data[data.length - 1].pressure;
+            document.getElementById('data-points').textContent = data.length.toLocaleString();
+            
+            // Count unique locations
+            const uniqueLocations = new Set(data.map(item => item.location));
+            document.getElementById('locations').textContent = uniqueLocations.size;
+            
+            // Update charts
+            const recentData = data.slice(-20); // Last 20 data points
+            
+            tempChart.data.labels = recentData.map(item => item.time);
+            tempChart.data.datasets[0].data = recentData.map(item => item.temp);
+            tempChart.update();
+            
+            pressureChart.data.labels = tempChart.data.labels;
+            pressureChart.data.datasets[0].data = recentData.map(item => item.pressure);
+            pressureChart.update();
+        }
+
+        function populateDataTable(data) {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">No data available</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Show most recent entries first
+            data.slice().reverse().forEach(row => {
+                const tr = document.createElement('tr');
+                
+                tr.innerHTML = `
+                    <td>${row.time}</td>
+                    <td>${row.temp}</td>
+                    <td>${row.pressure}</td>
+                    <td>${row.adc}</td>
+                    <td>${row.location}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            
+            // Hide loading, show table
+            document.getElementById('data-loading').style.display = 'none';
+            document.getElementById('data-table-container').style.display = 'block';
+        }
     </script>
 </body>
 </html>
